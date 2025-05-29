@@ -1,8 +1,15 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
+from graph import build_graph
+from langchain_core.messages import HumanMessage
 
-print("Spotify Client ID:", os.getenv("SPOTIFY_CLIENT_ID"))
-print("Spotify Client Secret:", os.getenv("SPOTIFY_CLIENT_SECRET"))
-print("Spotify Redirect URI:", os.getenv("SPOTIFY_REDIRECT_URI"))
-print("OpenAI API Key:", os.getenv("OPENAI_API_KEY"))
+if __name__ == "__main__":
+    workflow = build_graph()
+    test_prompt = "Give me some upbeat songs to get me energized for a workout."
+    result = workflow.invoke({
+        "messages": [HumanMessage(content=test_prompt)]
+    })
+
+    print("\n=== DJ Reasoner Response ===\n")
+    print(result["final_output"])
