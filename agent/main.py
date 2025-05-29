@@ -3,13 +3,15 @@ from dotenv import load_dotenv
 load_dotenv()
 from graph import build_graph
 from langchain_core.messages import HumanMessage
-
+from langchain_openai import ChatOpenAI
 if __name__ == "__main__":
+
     workflow = build_graph()
-    test_prompt = "Give me some upbeat songs to get me energized for a workout."
+
+    prompt = "Give me songs songs by Maroon 5 from the album 'Songs about Jane'"
     result = workflow.invoke({
-        "messages": [HumanMessage(content=test_prompt)]
+        "messages": [HumanMessage(content=prompt)]
     })
 
-    print("\n=== DJ Reasoner Response ===\n")
+    print("\n=== DJ Reasoner Says ===\n")
     print(result["final_output"])

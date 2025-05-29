@@ -5,6 +5,8 @@ from langgraph.graph.message import add_messages
 from langchain_core.runnables import RunnableLambda
 from langchain_core.messages import HumanMessage
 from tools import spotify_tool
+from langchain_openai import ChatOpenAI
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7)
 
 def receive_prompt(state):
     return {"user_input": state["messages"][-1].content}
@@ -21,8 +23,32 @@ def call_spotify(state):
     }
 
 def reason_about_results(state):
-    explanation = f"I'm recommending these songs based on your prompt: '{state['query']}'.\n\n"
-    return {"final_output": explanation + state["search_results"]}
+    query = state["query"]
+    results = state["search_results"]
+
+    prompt = f"""You are a music-savvy assistant. The user asked for music like: "{query}".
+
+    Here are the songs you found:
+    {results}
+
+    Format your response as a **numbered list**, where each entry includes:
+    1. The song title in quotes
+    2. The artist name
+    3. A short explanation of why this song fits the user's request
+
+    Make sure the formatting looks like this:
+
+    1. "Title" by Artist — explanation
+    2. "..." ...
+
+    For example:
+    1. "Chasing Cars" by Snow Patrol — This song has a melancholic yet uplifting vibe, perfect for rainy days.
+
+    Keep your tone friendly and insightful, like a DJ recommending tracks to a friend.
+    """
+
+    response = llm.invoke(prompt)
+    return {"final_output": response.content}
 
 def build_graph():
     builder = StateGraph(state_schema=dict)

@@ -3,3 +3,4 @@ langgraph
 spotipy
 python-dotenv
 openai
+langchain-openai
