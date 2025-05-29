@@ -1,9 +1,7 @@
 # agent/graph.py
 
 from langgraph.graph import StateGraph
-from langgraph.graph.message import add_messages
 from langchain_core.runnables import RunnableLambda
-from langchain_core.messages import HumanMessage
 from tools import spotify_tool
 from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7)
